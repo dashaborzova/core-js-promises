@@ -39,8 +39,11 @@ function getPromise(number) {
  * Promise.resolve('success') => promise that will be fulfilled with 'success' value
  * Promise.reject('fail')     => promise that will be fulfilled with 'fail' value
  */
-function getPromiseResult(/* source */) {
-  throw new Error('Not implemented');
+function getPromiseResult(source) {
+  return source.then(
+    () => 'success',
+    () => 'fail'
+  );
 }
 
 /**
@@ -56,8 +59,16 @@ function getPromiseResult(/* source */) {
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)]  => Promise fulfilled with 1
  * [Promise.reject(1), Promise.reject(2), Promise.reject(3)]    => Promise rejected
  */
-function getFirstResolvedPromiseResult(/* promises */) {
-  throw new Error('Not implemented');
+function getFirstResolvedPromiseResult(promises) {
+  return Promise.allSettled(promises).then((results) => {
+    const resolvedValue = results.find(
+      (result) => result.status === 'fulfilled'
+    );
+    if (resolvedValue) {
+      return resolvedValue.value;
+    }
+    throw new Error('Promise rejected');
+  });
 }
 
 /**
